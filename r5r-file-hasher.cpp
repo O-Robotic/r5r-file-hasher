@@ -23,14 +23,14 @@ nlohmann::json unknown;
 //Config options for hash json generation
 
 //Paths to check, will check all files and directories from this point
-std::vector<std::string> paths{ "\\paks", "\\vpk", "\\media" , "\\audio", "\\stbsp", "\\cfg" , "\\bin", "\\materials", "\\platform\\shaders" };
+std::vector<std::string> paths = { "\\paks", "\\vpk", "\\media" , "\\audio", "\\stbsp", "\\cfg" , "\\bin", "\\materials", "\\platform\\shaders" };
 
 //Specific files to check
-std::vector<std::string> files{ "\\amd_ags_x64.dll", "\\bink2w64.dll", "\\binkawin64.dll", "\\r5apexdata.bin", "\\mileswin64.dll" };
+std::vector<std::string> files = { "\\amd_ags_x64.dll", "\\bink2w64.dll", "\\binkawin64.dll", "\\r5apexdata.bin", "\\mileswin64.dll" };
 
 #ifdef BUILDER
 //Ignore specific files by name
-std::vector<std::string> excluded_files{ "client_frontend.bsp.pak000_000.vpk", "englishclient_frontend.bsp.pak000_dir.vpk" };
+std::vector<std::string> excluded_files = { "client_frontend.bsp.pak000_000.vpk", "englishclient_frontend.bsp.pak000_dir.vpk" };
 #endif // 
 
 
@@ -211,7 +211,7 @@ void main()
 
 
 		//Check individual files
-		for (int i{}; i < files.size(); ++i)
+		for (int i = 0 ; i < files.size(); ++i)
 		{
 			fs::path a = fs::current_path() += files[i];
 			
@@ -220,7 +220,7 @@ void main()
 		}
 
 		//Check whole directories
-		for (int i{}; i < paths.size(); ++i)
+		for (int i = 0; i < paths.size(); ++i)
 		{
 			fs::path a = fs::current_path() += paths[i];
 			std::cout << "Verifying: " << a << std::endl;
