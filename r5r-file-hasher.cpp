@@ -12,13 +12,11 @@
 #include "cryptopp/sha.h"
 #include "cryptopp/hex.h"
 
-
 namespace fs = std::experimental::filesystem;
 
 nlohmann::json known;
+
 nlohmann::json unknown;
-
-
 
 //Config options for hash json generation
 
@@ -32,10 +30,6 @@ std::vector<std::string> files = { "\\amd_ags_x64.dll", "\\bink2w64.dll", "\\bin
 //Ignore specific files by name
 std::vector<std::string> excluded_files = { "client_frontend.bsp.pak000_000.vpk", "englishclient_frontend.bsp.pak000_dir.vpk" };
 #endif // 
-
-
-
-
 
 
 std::string logo = R"(+-----------------------------------------------+
@@ -71,8 +65,6 @@ void HashFile(const fs::path &path_in, const bool& gen_hash)
 	{
 	}
 
-
-
 	if (file_hash != "")
 	{
 		std::string path_str = path_in.u8string();
@@ -97,14 +89,9 @@ void HashFile(const fs::path &path_in, const bool& gen_hash)
 		unknown[path_str] = file_hash;
 
 		#endif
-
-
-
 	}
 
 }
-
-
 
 
 void main()
@@ -113,8 +100,6 @@ void main()
 	std::cout << logo << std::endl;
 	std::cout << "R5R file hash check" << std::endl;
 	
-	
-
 	fs::path hashes_path = fs::current_path() /= "hashes.json";
 	std::ifstream hashes_file_in(hashes_path, std::ios::in);
 
@@ -139,7 +124,7 @@ void main()
 #ifdef BUILDER
 		
 	//Add select menu if builder is defined
-
+	
 	int i;
 
 	std::cout << "\nPress 1 to generate hashes from current directory, Press 2 to verify files in current directory: ";
@@ -156,23 +141,23 @@ void main()
 			HashFile(a, true);
 		}
 
-		//I should think of a bette way to do this but idk, this is only a builder function, no need to be fast
-		bool reject_file{ false };
+		//I should think of a better way to do this but idk, this is only a builder function, no need to be fast
+		bool reject_file = false;
 
 
 		//Hash Directories
 		for (std::string& ittr : paths)
 		{
 
-			fs::path a = fs::current_path() += ittr;
+			fs::path dir = fs::current_path() += ittr;
 
-			for (const auto& file : fs::recursive_directory_iterator(a))
+			for (auto& file : fs::recursive_directory_iterator(dir))
 			{
 				//Clear file rejection status
 				reject_file = false;
 				
 				//Set reject_file true if file is in excluded_files vector
-				for (auto& ittr : excluded_files)
+				for (std::string& ittr : excluded_files)
 				{
 					if (ittr == file.path().filename())
 					{
@@ -182,13 +167,11 @@ void main()
 
 
 				//Sanity checks on files and filter files that are in excluded_files
-				if ((file.path().has_filename()) && (file.path().has_extension()) && reject_file == false)
+				if (reject_file == false && (file.path().has_filename()) && (file.path().has_extension()))
 				{
-					
 						std::cout << "Hashing: " << file << std::endl;
 						std::cout << "Hashing: " << file.path().filename() << std::endl;
-						HashFile(file, true);
-					
+						HashFile(file, true);	
 				}
 				
 			}
@@ -201,31 +184,25 @@ void main()
 
 }
 
-
-
 	else
 	{
-
-
-#endif // 
-
+#endif
 
 		//Check individual files
-		for (int i = 0 ; i < files.size(); ++i)
+		for (std::string& ittr : files)
 		{
-			fs::path a = fs::current_path() += files[i];
-			
+			fs::path a = fs::current_path() += ittr;
 			std::cout << "Verifying: " << a << std::endl;
 			HashFile(a, false);
 		}
 
 		//Check whole directories
-		for (int i = 0; i < paths.size(); ++i)
+		for (std::string& ittr : paths)
 		{
-			fs::path a = fs::current_path() += paths[i];
+			fs::path a = fs::current_path() += ittr;
 			std::cout << "Verifying: " << a << std::endl;
 
-			for (const auto& file : fs::recursive_directory_iterator(a))
+			for (auto& file : fs::recursive_directory_iterator(a))
 			{
 				if ((file.path().has_filename()) && (file.path().has_extension()))
 				{
