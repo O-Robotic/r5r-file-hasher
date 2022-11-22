@@ -28,7 +28,7 @@ std::vector<std::string> files = { "\\amd_ags_x64.dll", "\\bink2w64.dll", "\\bin
 
 #ifdef BUILDER
 //Ignore specific files by name
-std::vector<std::string> excluded_files = { "client_frontend.bsp.pak000_000.vpk", "englishclient_frontend.bsp.pak000_dir.vpk" };
+std::vector<std::string> excluded_files = { "client_frontend.bsp.pak000_000.vpk", "englishclient_frontend.bsp.pak000_dir.vpk", "englishclient_mp_rr_canyonlands_staging.bsp.pak000_dir.vpk", "client_mp_rr_canyonlands_staging.bsp.pak000_000.vpk"};
 #endif // 
 
 
