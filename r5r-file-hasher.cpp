@@ -1,38 +1,31 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#define BUILDER
+//#define BUILDER
 
 #include "Include/nlohmann/json.hpp"
 #include <iostream>
 #include <experimental/filesystem>
 #include <format>
-#include "cryptopp/cryptlib.h"
-#include "cryptopp/channels.h"
-#include "cryptopp/filters.h"
-#include "cryptopp/files.h"
-#include "cryptopp/sha.h"
-#include "cryptopp/hex.h"
+#include "cryptopp870/cryptlib.h"
+#include "cryptopp870/filters.h"
+#include "cryptopp870/files.h"
+#include "cryptopp870/sha.h"
+#include "cryptopp870/hex.h"
 
 namespace fs = std::experimental::filesystem;
 
 nlohmann::json known;
 
 nlohmann::json unknown;
+bool shouldAddSDK = false;
 
 //Config options for hash json generation
 
 //Paths to check, will check all files and directories from this point
-std::vector<std::string> paths = { "\\paks", "\\vpk", "\\media" , "\\audio", "\\stbsp", "\\cfg" , "\\bin", "\\materials", "\\platform\\shaders" };
+const char* paths[]{ "\\paks", "\\vpk", "\\media" , "\\audio", "\\stbsp", "\\cfg" , "\\bin", "\\materials", "\\platform\\shaders" };
 
-//Specific files to check
-std::vector<std::string> files = { "\\amd_ags_x64.dll", "\\bink2w64.dll", "\\binkawin64.dll", "\\r5apexdata.bin", "\\mileswin64.dll" };
+const char* excluded_files[]{ "r5r-file-hasher.exe", "build.txt", "gameinfo.txt", "gameversion.txt", "hashes.json" };
 
-#ifdef BUILDER
-//Ignore specific files by name
-std::vector<std::string> excluded_files = { "client_frontend.bsp.pak000_000.vpk", "englishclient_frontend.bsp.pak000_dir.vpk", "englishclient_mp_rr_canyonlands_staging.bsp.pak000_dir.vpk", "client_mp_rr_canyonlands_staging.bsp.pak000_000.vpk"};
-#endif // 
-
-
-std::string logo = R"(+-----------------------------------------------+
+const char* logo = R"(+-----------------------------------------------+
 |   ___ ___ ___     _              _        _   |
 |  | _ \ __| _ \___| |___  __ _ __| |___ __| |	|
 |  |   /__ \   / -_) / _ \/ _` / _` / -_) _` |  |
@@ -42,7 +35,7 @@ std::string logo = R"(+-----------------------------------------------+
 
 
 //Main hashing function
-void HashFile(const fs::path &path_in, const bool& gen_hash)
+void HashFile(const fs::path &path_in, const bool gen_hash)
 {
 
 	using namespace CryptoPP;
@@ -51,15 +44,11 @@ void HashFile(const fs::path &path_in, const bool& gen_hash)
 
 	std::string file_hash;
 	HashFilter hash_filter(hash, new HexEncoder(new StringSink(file_hash)));
-
-	ChannelSwitch channel_switch;
-	channel_switch.AddDefaultRoute(hash_filter);
-	
-	
+		
 	//Try catch to stop directories breaking the FileSource, should use a better method to filter them out
 	try
 	{
-		FileSource(path_in.c_str(), true, new Redirector(channel_switch));
+		FileSource(path_in.c_str(), true, new Redirector(hash_filter));
 	}
 	catch (const std::exception&)
 	{
@@ -69,26 +58,51 @@ void HashFile(const fs::path &path_in, const bool& gen_hash)
 	{
 		std::string path_str = path_in.u8string();
 		std::size_t ind = path_str.find(fs::current_path().u8string());
-		path_str.erase(ind, fs::current_path().u8string().length());
-
-		#ifdef BUILDER
-		if (!gen_hash)
+		if (shouldAddSDK)
 		{
-			unknown[path_str] = file_hash;
-
+			path_str.erase(ind, (fs::current_path() += "\\SDK").u8string().length());
 		}
 		else
 		{
-			known[path_str] = file_hash;
-			std::cout << "Hash: " << file_hash << std::endl;
+			path_str.erase(ind, fs::current_path().u8string().length());
 		}
-		#endif
+#ifdef BUILDER
+		if (!gen_hash)
+		{
+			unknown[path_str] = file_hash;
+		}
+		else
+		{
 
-		#ifndef BUILDER
+			if (shouldAddSDK)
+			{
+				if (known[path_str].is_object())
+				{
+					known[path_str] += {"Default", file_hash };
+				}
+				else
+				{
+					known[path_str] = { {"SDK", file_hash }};
+				}
+			}
+			else if (known[path_str].is_object())
+			{
+				known[path_str] += {"Default", file_hash};
+			}
+			else
+			{
+				known[path_str] = file_hash;
+			}
+
+			std::cout << "Hashed: " << path_str << "\nHash: " << file_hash << "\n" << std::endl;
+		}
+#endif
+
+#ifndef BUILDER
 
 		unknown[path_str] = file_hash;
 
-		#endif
+#endif
 	}
 
 }
@@ -101,6 +115,8 @@ void main()
 	std::cout << "R5R file hash check" << std::endl;
 	
 	fs::path hashes_path = fs::current_path() /= "hashes.json";
+
+#ifndef BUILDER
 	std::ifstream hashes_file_in(hashes_path, std::ios::in);
 
 	if (hashes_file_in.good() && hashes_file_in)
@@ -108,8 +124,6 @@ void main()
 		hashes_file_in >> known;
 		hashes_file_in.close();
 	}
-	
-#ifndef BUILDER
 	else
 	{
 		std::cout << "\nFailed to read hashes.json, make sure you put it and this exe in the folder with r5apex" << std::endl;
@@ -132,102 +146,199 @@ void main()
 	std::cin >> i;
 	if (i == 1)
 	{
-		//Hash individual files
-		for (std::string& ittr : files)
-		{
-			fs::path a = fs::current_path() += ittr;
+		const fs::path sdkPath = fs::current_path() += "\\SDK";
 
-			std::cout << "Hashing: " << a << std::endl;
-			HashFile(a, true);
+		if (fs::exists(sdkPath))
+		{
+			shouldAddSDK = true;
+
+			std::cout << "Hashing SDK files" << std::endl;
+
+			for (const char* ittr : paths)
+			{
+
+				fs::path dir = sdkPath;
+				dir += ittr;
+
+				
+				for (auto& file : fs::recursive_directory_iterator(dir))
+				{
+					if (std::find(std::begin(excluded_files), std::end(excluded_files), file.path().filename().u8string()) != std::end(excluded_files))
+					{
+						continue;
+					}
+
+					if (file.path().has_filename() && file.path().has_extension())
+					{
+						HashFile(file, true);
+					}
+				}
+			}
+
+			for (auto& file : fs::directory_iterator(sdkPath))
+			{
+				//Check if file is in excluded files list
+				if (std::find(std::begin(excluded_files), std::end(excluded_files), file.path().filename().u8string()) != std::end(excluded_files))
+				{
+					continue;
+				}
+
+				if (file.path().has_filename() && file.path().has_extension())
+				{
+					HashFile(file, true);
+				}
+			}
 		}
 
-		//I should think of a better way to do this but idk, this is only a builder function, no need to be fast
-		bool reject_file = false;
+		shouldAddSDK = false;
 
+		//Hash files in base dir
+		for (auto& file : fs::directory_iterator(fs::current_path()))
+		{
+			if (std::find(std::begin(excluded_files), std::end(excluded_files), file.path().filename().u8string()) != std::end(excluded_files))
+			{
+				continue;
+			}
+
+			if ((file.path().has_filename()) && (file.path().has_extension()))
+			{
+				HashFile(file, true);
+			}
+		}
 
 		//Hash Directories
-		for (std::string& ittr : paths)
+		for (const char* ittr : paths)
 		{
 
 			fs::path dir = fs::current_path() += ittr;
 
 			for (auto& file : fs::recursive_directory_iterator(dir))
 			{
-				//Clear file rejection status
-				reject_file = false;
-				
-				//Set reject_file true if file is in excluded_files vector
-				for (std::string& ittr : excluded_files)
+				if (std::find(std::begin(excluded_files), std::end(excluded_files), file.path().filename().u8string()) != std::end(excluded_files))
 				{
-					if (ittr == file.path().filename())
-					{
-						reject_file = true;
-					}
+					continue;
 				}
 
-
-				//Sanity checks on files and filter files that are in excluded_files
-				if (reject_file == false && (file.path().has_filename()) && (file.path().has_extension()))
+				if ((file.path().has_filename()) && (file.path().has_extension()))
 				{
-						std::cout << "Hashing: " << file << std::endl;
-						std::cout << "Hashing: " << file.path().filename() << std::endl;
-						HashFile(file, true);	
+					HashFile(file, true);
 				}
-				
 			}
 		}
 
 		//Write hashes.json file
 		std::ofstream hashes_file(hashes_path, std::ios::out | std::ios::trunc);
-		hashes_file << known.dump(4);
+		hashes_file << known.dump(1);
 		hashes_file.close();
 
-}
-
+	}
 	else
 	{
-#endif
+		std::ifstream hashes_file_in(hashes_path, std::ios::in);
 
-		//Check individual files
-		for (std::string& ittr : files)
+		if (hashes_file_in.good() && hashes_file_in)
 		{
-			fs::path a = fs::current_path() += ittr;
-			std::cout << "Verifying: " << a << std::endl;
-			HashFile(a, false);
+			hashes_file_in >> known;
+			hashes_file_in.close();
+		}
+#endif
+		//If user has sdk installed use different set of hashes for sdk modified files
+		bool bHasSDK = false;
+
+		//Check files in the base directory and check if user has the sdk installed
+		for (auto& file : fs::directory_iterator(fs::current_path()))
+		{
+			if (file.path().has_filename() && file.path().has_extension())
+			{
+				if (file.path().filename().u8string() == "gamesdk.dll")
+				{
+					bHasSDK = true;
+				}
+				HashFile(file, false);
+			}
 		}
 
 		//Check whole directories
-		for (std::string& ittr : paths)
+		for (const char* ittr : paths)
 		{
 			fs::path a = fs::current_path() += ittr;
 			std::cout << "Verifying: " << a << std::endl;
 
-			for (auto& file : fs::recursive_directory_iterator(a))
+			for (auto & file : fs::recursive_directory_iterator(a))
 			{
-				if ((file.path().has_filename()) && (file.path().has_extension()))
+				if (file.path().has_filename() && file.path().has_extension())
 				{
 					HashFile(file, false);
 				}
 			}
 		}
 
+		std::cout << std::endl;
+
 		//Check hashes vs hash file
 		//unknown = hashes generated
 		//known = known good hashes from file
 		for (auto& ittr : known.items())
 		{
-			if (unknown.contains(ittr.key()))
+
+			//If ittr is an object we should expect it may or may not exist depending on if the user has the sdk
+			if (ittr.value().is_object())
 			{
-				if (unknown[ittr.key()].get<std::string>() != (ittr.value()))
+				if (bHasSDK) //Do we have the sdk installed
 				{
-					bad_files = true;
-					std::cout << "\nInvalid File found: " << ittr.key() << '\n' << std::endl;
+					
+					//If we have the sdk installed every file from the json should exist
+					if (!unknown.contains(ittr.key()))
+					{
+						bad_files = true;
+						std::cout << "File missing: " << ittr.key() << std::endl;
+						continue;
+					}
+					
+					//If we do then check the value against the "SDK" hash
+					if (unknown[ittr.key()] != ittr.value()["SDK"])
+					{
+						bad_files = true;
+						std::cout << "Invalid File found: " << ittr.key() << std::endl;
+					}
+				}
+				else
+				{
+					//Does the current known hash object have a value for "Default"
+					if (ittr.value().object().contains("Default"))
+					{
+						//If it does have a "Default" value then we should have the file no matter what
+						if (!unknown.contains(ittr.key()))
+						{
+							bad_files = true;
+							std::cout << "File missing: " << ittr.key() << std::endl;
+							continue;
+						}
+					}
+
+					//If we do and the file exists then check the value against the "Default" hash
+					if (unknown[ittr.key()] != ittr.value()["Default"])
+					{
+						bad_files = true;
+						std::cout << "Invalid File found: " << ittr.key() << std::endl;
+					}
 				}
 			}
-			else
+			else //If ittr is not an object this file should exist no matter if user has the sdk
 			{
-				bad_files = true;
-				std::cout << "\nFiles missing: " << ittr.key() << '\n' << std::endl;
+				if (unknown.contains(ittr.key())) //Do we have the ittr file
+				{
+					if (unknown[ittr.key()] != ittr.value()) //Since the file exists check that its valid
+					{
+						bad_files = true;
+						std::cout << "Invalid File found: " << ittr.key() << std::endl;
+					}
+				}
+				else
+				{
+					bad_files = true;
+					std::cout << "File missing: " << ittr.key() << std::endl;
+				}
 			}
 		}
 		
@@ -244,8 +355,6 @@ void main()
 #ifdef BUILDER
 	}
 #endif // BUILDER
-
 	system("pause");
-
 }
 
