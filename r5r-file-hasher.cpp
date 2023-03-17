@@ -1,15 +1,13 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#define _CRT_SECURE_NO_WARNINGS
 //#define BUILDER
-
 #include "Include/nlohmann/json.hpp"
 #include <iostream>
 #include <experimental/filesystem>
 #include <format>
-#include "cryptopp870/cryptlib.h"
-#include "cryptopp870/filters.h"
-#include "cryptopp870/files.h"
-#include "cryptopp870/sha.h"
-#include "cryptopp870/hex.h"
+#include <fstream>
+#include "Sha1.h"
+
 
 namespace fs = std::experimental::filesystem;
 
@@ -32,29 +30,53 @@ const char* logo = R"(+-----------------------------------------------+
 |  |_|_\___/_|_\___|_\___/\__,_\__,_\___\__,_|  |
 |                                               |
 +-----------------------------------------------+)";
-
+const int ReadSize = 1048576;
 
 //Main hashing function
-void HashFile(const fs::path &path_in, const bool gen_hash)
+void HashFile(const fs::path& path_in, const bool gen_hash)
 {
 
-	using namespace CryptoPP;
+	CSha1* sha = new CSha1();
+	Sha1_Init(sha);
+
+	unsigned char* buf = (unsigned char*)malloc(ReadSize);
+
+	FILE* file = fopen(path_in.u8string().c_str(), "rb");
+
+	size_t filePos = 0;
+
+	bool didHash = false;
+
+	if (file)
+	{	
+		while (filePos = fread(buf, 1, ReadSize, file))
+			{
+				Sha1_Update(sha, buf, filePos);
+			}
+		didHash = true;
+		fclose(file);
+	}
+	else
+	{
+		std::cout << "Failed to open: " << path_in.u8string().c_str() << std::endl;
+	}
 	
-	SHA1 hash;
+	unsigned char result[20];
+	Sha1_Final(sha, result);
 
-	std::string file_hash;
-	HashFilter hash_filter(hash, new HexEncoder(new StringSink(file_hash)));
-		
-	//Try catch to stop directories breaking the FileSource, should use a better method to filter them out
-	try
+	std::stringstream shastr;
+	shastr << std::hex << std::setfill('0');
+	for (const auto& byte : result)
 	{
-		FileSource(path_in.c_str(), true, new Redirector(hash_filter));
-	}
-	catch (const std::exception&)
-	{
+		shastr << std::setw(2) << (int)byte;
 	}
 
-	if (file_hash != "")
+	free(buf);
+	delete sha;
+
+	std::string file_hash = shastr.str();
+
+	if (didHash)
 	{
 		std::string path_str = path_in.u8string();
 		std::size_t ind = path_str.find(fs::current_path().u8string());
@@ -99,17 +121,17 @@ void HashFile(const fs::path &path_in, const bool gen_hash)
 #endif
 
 #ifndef BUILDER
-
 		unknown[path_str] = file_hash;
-
 #endif
 	}
-
 }
 
 
 void main()
 {
+
+	Sha1Prepare();
+
 	bool bad_files{ false };
 	std::cout << logo << std::endl;
 	std::cout << "R5R file hash check" << std::endl;
