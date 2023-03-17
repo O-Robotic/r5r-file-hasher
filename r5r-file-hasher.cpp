@@ -1,6 +1,6 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #define _CRT_SECURE_NO_WARNINGS
-//#define BUILDER
+#define BUILDER
 #include "Include/nlohmann/json.hpp"
 #include <iostream>
 #include <experimental/filesystem>
@@ -326,8 +326,9 @@ void main()
 				}
 				else
 				{
+
 					//Does the current known hash object have a value for "Default"
-					if (ittr.value().object().contains("Default"))
+					if (ittr.value().contains("Default"))
 					{
 						//If it does have a "Default" value then we should have the file no matter what
 						if (!unknown.contains(ittr.key()))
@@ -336,13 +337,18 @@ void main()
 							std::cout << "File missing: " << ittr.key() << std::endl;
 							continue;
 						}
-					}
 
-					//If we do and the file exists then check the value against the "Default" hash
-					if (unknown[ittr.key()] != ittr.value()["Default"])
+						//If the object has a "Default" hash and the file exists then check the value against the "Default" hash
+						if (unknown[ittr.key()] != ittr.value()["Default"])
+						{
+							bad_files = true;
+							std::cout << "Invalid File found: " << ittr.key() << std::endl;
+						}
+
+					}
+					else if (!ittr.value().contains("Default")) //If we have no default value this file only exists in the sdk and we should skip it since we dont have the sdk installed
 					{
-						bad_files = true;
-						std::cout << "Invalid File found: " << ittr.key() << std::endl;
+						continue;
 					}
 				}
 			}
