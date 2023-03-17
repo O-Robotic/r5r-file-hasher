@@ -346,7 +346,7 @@ void main()
 						}
 
 					}
-					else if (!ittr.value().contains("Default")) //If we have no default value this file only exists in the sdk and we should skip it since we dont have the sdk installed
+					else //If we have no default value this file only exists in the sdk and we should skip it since we dont have the sdk installed
 					{
 						continue;
 					}
