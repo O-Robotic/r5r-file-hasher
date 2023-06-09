@@ -1,23 +1,29 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #define _CRT_SECURE_NO_WARNINGS
-#define BUILDER
+//#define BUILDER
 #include "Include/nlohmann/json.hpp"
 #include <iostream>
 #include <experimental/filesystem>
 #include <format>
 #include <fstream>
 #include "Sha1.h"
-
+#include "curl/curl.h"
 
 namespace fs = std::experimental::filesystem;
 
+//Known is the hashes from hashes.json or from github
 nlohmann::json known;
-
+//Unknown is a users hashed files
 nlohmann::json unknown;
+
 bool shouldAddSDK = false;
 
-//Config options for hash json generation
+//Vars used for downloading the json from github into a buffer
+char* hashesJson = nullptr;
+double hashFileSize = 0;
+size_t bytesWritten = 0;
 
+//Config options for hash json generation
 //Paths to check, will check all files and directories from this point
 const char* paths[]{ "\\paks", "\\vpk", "\\media" , "\\audio", "\\stbsp", "\\cfg" , "\\bin", "\\materials", "\\platform\\shaders" };
 
@@ -31,6 +37,78 @@ const char* logo = R"(+-----------------------------------------------+
 |                                               |
 +-----------------------------------------------+)";
 const int ReadSize = 1048576;
+
+size_t curlWriteCallback(char* pData, size_t size, size_t nmemb, void* puserData)
+{
+	
+	if (hashesJson == nullptr)
+	{
+		curl_easy_getinfo((CURL*)puserData, CURLINFO_CONTENT_LENGTH_DOWNLOAD,&hashFileSize);
+		hashesJson = (char*)malloc((size_t)hashFileSize);
+
+		if (hashesJson == nullptr)
+		{
+			//if the data buffer is nullptr then we return 0 as this will be an error condition for curl
+			free((void*)hashesJson);
+			return 0;
+		}
+
+	}
+
+	if ( (int64_t)(hashFileSize - bytesWritten) - nmemb <= 0 )
+	{
+		//If the buffer cannot contain this data update reallocate the buffer and double the extra needed capacity
+		char* newbuff = (char*)realloc((void*)hashesJson, ((size_t)hashFileSize + nmemb) * 2 );
+
+		if (newbuff != nullptr)
+		{
+			//If realloc succeeds set the hashesJson pointer to the new memory we just allocated
+			hashesJson = newbuff;
+		}
+
+		if (newbuff == nullptr)
+		{
+			//If realloc fails we must free the original memory manually
+			free((void*)hashesJson);
+			return 0;
+		}
+
+		//New size will be current size + 2x the pdata size
+		hashFileSize = (size_t)(hashFileSize + (nmemb * 2));
+	}
+
+	memcpy((void*)&hashesJson[bytesWritten], pData, nmemb * size);
+	bytesWritten += nmemb;
+
+	//Curl does not null terminate the data, do this for every "block" since we dont know when we are getting the last block
+	hashesJson[bytesWritten] = '\0';
+
+	return nmemb;
+	
+}
+
+bool DownloadHashJson()
+{
+	
+	CURL* curl = curl_easy_init();
+
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curlWriteCallback);
+	curl_easy_setopt(curl, CURLOPT_URL, "https://raw.githubusercontent.com/O-Robotic/r5r-file-hasher/master/hashes.json");
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, curl);
+	CURLcode ret = curl_easy_perform(curl);
+	
+	if (ret != CURLE_OK)
+	{
+		std::cout << "Failed to download the hash list." << std::endl;
+		curl_easy_cleanup(curl);
+		return false;
+	}
+	
+	curl_easy_cleanup(curl);
+
+	return true;
+	
+}
 
 //Main hashing function
 void HashFile(const fs::path& path_in, const bool gen_hash)
@@ -127,40 +205,58 @@ void HashFile(const fs::path& path_in, const bool gen_hash)
 }
 
 
-void main()
+int main()
 {
 
 	Sha1Prepare();
 
-	bool bad_files{ false };
+	bool bad_files = false;
+
 	std::cout << logo << std::endl;
 	std::cout << "R5R file hash check" << std::endl;
 	
-	fs::path hashes_path = fs::current_path() /= "hashes.json";
-
 #ifndef BUILDER
-	std::ifstream hashes_file_in(hashes_path, std::ios::in);
-
-	if (hashes_file_in.good() && hashes_file_in)
+	if (!fs::exists("hashes.json"))
 	{
-		hashes_file_in >> known;
-		hashes_file_in.close();
+		bool hashDL = DownloadHashJson();
+		if (!hashDL)
+		{
+			std::cout << "Hashes file could not be downloaded and a hashes json was not found." << std::endl;
+			system("pause");
+			return EXIT_FAILURE;
+		}
+
+		known = nlohmann::json::parse(hashesJson);
+		free((void*)hashesJson);
 	}
 	else
 	{
-		std::cout << "\nFailed to read hashes.json, make sure you put it and this exe in the folder with r5apex" << std::endl;
-		system("pause");
-		return;
+		fs::path hashes_path = fs::current_path() /= "hashes.json";
+		std::ifstream hashes_file_in(hashes_path, std::ios::in);
+
+
+		if (hashes_file_in.good() && hashes_file_in)
+		{
+			hashes_file_in >> known;
+			hashes_file_in.close();
+		}
+		else
+		{
+			std::cout << "\nFailed to read hashes.json, make sure you put it and this exe in the folder with r5apex" << std::endl;
+			system("pause");
+			return EXIT_FAILURE;
+		}
+
 	}
+
 #endif // BUILDER
 
-	
-	
-		
 #ifdef BUILDER
 		
 	//Add select menu if builder is defined
 	
+	fs::path hashes_path = fs::current_path() /= "hashes.json";
+
 	int i;
 
 	std::cout << "\nPress 1 to generate hashes from current directory, Press 2 to verify files in current directory: ";
@@ -384,5 +480,6 @@ void main()
 	}
 #endif // BUILDER
 	system("pause");
+	return EXIT_SUCCESS;
 }
 
