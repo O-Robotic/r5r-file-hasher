@@ -74,7 +74,7 @@ size_t curlWriteCallback(char* pData, size_t size, size_t nmemb, void* puserData
 		}
 
 		//New size will be current size + 2x the pdata size
-		hashFileSize = (size_t)(hashFileSize + (nmemb * 2));
+		hashFileSize = hashFileSize + (nmemb * 2);
 	}
 
 	memcpy((void*)&hashesJson[bytesWritten], pData, nmemb * size);
