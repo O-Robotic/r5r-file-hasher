@@ -55,26 +55,23 @@ size_t curlWriteCallback(char* pData, size_t size, size_t nmemb, void* puserData
 
 	}
 
-	if ( (int64_t)(hashFileSize - bytesWritten) - nmemb <= 0 )
+	if ( hashFileSize - bytesWritten - nmemb <= 0 )
 	{
 		//If the buffer cannot contain this data update reallocate the buffer and double the extra needed capacity
-		char* newbuff = (char*)realloc((void*)hashesJson, ((size_t)hashFileSize + nmemb) * 2 );
-
-		if (newbuff != nullptr)
-		{
-			//If realloc succeeds set the hashesJson pointer to the new memory we just allocated
-			hashesJson = newbuff;
-		}
+		char* newbuff = (char*)realloc((void*)hashesJson, (size_t)hashFileSize + (nmemb * size) * 2);
 
 		if (newbuff == nullptr)
 		{
 			//If realloc fails we must free the original memory manually
 			free((void*)hashesJson);
-			return 0;
+			return 0;	
 		}
 
+		//If realloc succeeds set the hashesJson pointer to the new memory we just allocated
+		hashesJson = newbuff;
+
 		//New size will be current size + 2x the pdata size
-		hashFileSize = hashFileSize + (nmemb * 2);
+		hashFileSize = hashFileSize + (nmemb * size) * 2;
 	}
 
 	memcpy((void*)&hashesJson[bytesWritten], pData, nmemb * size);
