@@ -26,8 +26,7 @@ size_t bytesWritten = 0;
 //Config options for hash json generation
 //Paths to check, will check all files and directories from this point
 const char* paths[]{ "\\paks", "\\vpk", "\\media" , "\\audio", "\\stbsp", "\\cfg" , "\\bin", "\\materials", "\\platform\\shaders" };
-
-const char* excluded_files[]{ "r5r-file-hasher.exe", "build.txt", "gameinfo.txt", "gameversion.txt", "hashes.json" };
+const char* excluded_files[]{ "r5r-file-hasher.exe", "build.txt", "gameinfo.txt", "gameversion.txt", "hashes.json", "ui_sdk.rpak"};
 
 const char* logo = R"(+-----------------------------------------------+
 |   ___ ___ ___     _              _        _   |
