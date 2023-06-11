@@ -1272,9 +1272,6 @@
  "\\paks\\Win64\\ui.dll": "f62a4e608c5a2f7724950e4624d0338ea27cfa73",
  "\\paks\\Win64\\ui.rpak": "aa044e1ad25c05008b701cb5ffb6f281fbfc66f7",
  "\\paks\\Win64\\ui_mp.rpak": "7c799dd3d957d19b1fcf0864e1f381522ea4f722",
- "\\paks\\Win64\\ui_sdk.rpak": {
-  "SDK": "da9e6fdc6a5cd86b0e3a2339e1bdae2f3cfef1b1"
- },
  "\\platform\\shaders\\fxc\\boxfilter_cs50.vcs": "8308cd8c26309b73ece23a9ae99046b0e74c46c9",
  "\\platform\\shaders\\fxc\\visquery_ps40.vcs": "111d6bf5932bc82eb3343c61ac6fc218e0d0308a",
  "\\r5apex.exe": {
