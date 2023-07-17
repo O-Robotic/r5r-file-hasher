@@ -28,13 +28,13 @@
   "SDK": "d7dff6e6c8808b8d52ca45cd5a67bcc18df878a6"
  },
  "\\bin\\nav_build.bat": {
-  "SDK": "e3c087cec92e72d85554b1a69e87e476dd6ceb44"
+  "SDK": "5791d75a185e7edc3d845f5d3a19a089ee7121ca"
  },
  "\\bin\\naveditor.exe": {
-  "SDK": "33865bc3c6d8f8054e1204fefdb1176548e15a93"
+  "SDK": "2ab56e0ae8651e1fca8b831a9f614cdb3a1b57b7"
  },
  "\\bin\\netcon32.exe": {
-  "SDK": "6cd511d815a2d54bdadaca7f3d71d499de4c1fc9"
+  "SDK": "2c75fc4186904a87b3f216629211040ddd454d17"
  },
  "\\bin\\protoc64.exe": {
   "SDK": "dd50f34bc5441b5a59c8ccc46197270c00377d4e"
@@ -43,12 +43,15 @@
   "SDK": "761d5b17aed1e6f2bcfa632481a60908f304aa33"
  },
  "\\bin\\x64_retail\\plugins\\PluginSDK.dll": {
-  "SDK": "81a6f0eb7dc03aa7e0a0af4f033ab78ba73488d9"
+  "SDK": "0ea8b1dccf49abc258fd2e4a53b9c3356b4e92b4"
  },
  "\\bink2w64.dll": "7e5206e16e37dee8f598e1b282aa75031c72ef81",
  "\\binkawin64.dll": "505063d36cb43a1df9fbd7d608a00b857e0185c7",
  "\\cfg\\client\\st_data.bin": "8cb69a15d987a1b9c321809bdde287bce135e9b2",
- "\\cfg\\config_default_pc.cfg": "65d905dd5a15891fc5d37ea2fcd01c2af5fa3688",
+ "\\cfg\\config_default_pc.cfg": {
+  "Default": "65d905dd5a15891fc5d37ea2fcd01c2af5fa3688",
+  "SDK": "6d859f8971ed61131c0d2ea45983172f1ff9d3ba"
+ },
  "\\cfg\\cpu_level_0_pc.ekv": "3f161d8293d0a075bcaf218a826fe1653dddf7b7",
  "\\cfg\\cpu_level_1_pc.ekv": "d4a5b38d28862d49540a0bc89fad043c7d755f94",
  "\\cfg\\cpu_level_2_pc.ekv": "0b7ed8389def429596dbf45a9132a2652a885900",
@@ -72,18 +75,18 @@
  "\\cfg\\server\\persistent_player_data_version_512.pdef": {
   "SDK": "8a27b5502940e5f7e3d2e08826f339440ab12bc9"
  },
- "\\cfg\\server\\startup.bin": {
-  "SDK": "8185d813f3030e732f918e0c8da582f6a021dce2"
- },
  "\\cfg\\video_settings_changed_quit.cfg": "f59118712ff45e3f8132cdd3ecfcfc6d3d2fa490",
  "\\dedicated.dll": {
-  "SDK": "420606baa7bd5790457c3ca14c93806ec39dc585"
+  "SDK": "4f21bb304a776b28c0a92c94ac75518c3c887e4c"
  },
  "\\gamesdk.dll": {
-  "SDK": "97fb17974d7f68d246859ddf767486bcbfd07168"
+  "SDK": "6eae29f41f4bb389f9dd2ae2585a06c2a2c7890a"
  },
  "\\launcher.exe": {
-  "SDK": "486414a50a6f571f28d56665eb8417f457cb6ebb"
+  "SDK": "c23801df9458007ae7b678f3dd24e35dc7db07c6"
+ },
+ "\\loader.dll": {
+  "SDK": "234f2e64c580e2b5c57aaac1931145a0a166ad91"
  },
  "\\materials\\correction\\UndoACESToe.raw_hdr": "e786fe99112e58d45397e385c588381ce9cf74e9",
  "\\materials\\correction\\__master_color_grade.raw_hdr": "d6232bbeb78882a96381d0fc07f38b6c7aec36ff",
@@ -1276,10 +1279,10 @@
  "\\platform\\shaders\\fxc\\visquery_ps40.vcs": "111d6bf5932bc82eb3343c61ac6fc218e0d0308a",
  "\\r5apex.exe": {
   "Default": "8d0968b5fdb6631d8d9754fb56234f3b5630f028",
-  "SDK": "25d6ff69101706334b0fe269d45acf5305e6f9b1"
+  "SDK": "973e6440036f1ebc88e288139c0657d9128bc1f6"
  },
  "\\r5apex_ds.exe": {
-  "SDK": "606d9d50ce71ee07bf64366a04ebe6248af13740"
+  "SDK": "2c180aff47813b5926760e05f1e97ae992425724"
  },
  "\\r5apexdata.bin": "249b9ab44ea85e3971ff06c5cc5e7a77e7e06789",
  "\\stbsp\\mp_lobby.stbsp": "e615f8f1ffe14318e5c8a31bf449683b582a09a8",
@@ -1290,7 +1293,7 @@
  "\\stbsp\\mp_rr_desertlands_64k_x_64k.stbsp": "ccd8a955f01fe351a5864b7b8167805d0efb519a",
  "\\vpk\\client_frontend.bsp.pak000_000.vpk": {
   "Default": "16fb163653ecda1c555cdc2374b0413dd013a357",
-  "SDK": "d8fda1dd8d936fd8c4d8e5c6e31ee67c1aec5e59"
+  "SDK": "ccc440420d266349535b28c23c1baf87041ba220"
  },
  "\\vpk\\client_frontend.bsp.pak000_001.vpk": "7800a3a22ba7b229a3942d7ddcc23831a5c7629d",
  "\\vpk\\client_frontend.bsp.pak000_002.vpk": "ec4ac512b23a2654e98c6388261e8579bb37bba7",
@@ -1302,7 +1305,7 @@
  "\\vpk\\client_frontend.bsp.pak000_008.vpk": "3e3621df3195d198f28d0b88f9d15c17acc6deeb",
  "\\vpk\\client_mp_common.bsp.pak000_000.vpk": {
   "Default": "c1596b4c148948306d1980b771032ea8ea7d21de",
-  "SDK": "cf399e84e9ec845ceb3d7314a3afe2f9147a4d90"
+  "SDK": "58226b89e95a3a110a74d3a2ff8ae5b1a608bc4e"
  },
  "\\vpk\\client_mp_common.bsp.pak000_001.vpk": "efeefad56720aa46811e693e37b902e72456b88e",
  "\\vpk\\client_mp_common.bsp.pak000_002.vpk": "29cb267d5635483195b43e9393af634362430fb8",
@@ -1312,30 +1315,30 @@
  "\\vpk\\client_mp_common.bsp.pak000_006.vpk": "88a11b44195bdee9ec2e5ff02fe1e5728c439b1a",
  "\\vpk\\client_mp_common.bsp.pak000_007.vpk": "d8dfd0a80070b1d2ab19c7d57391759ae271c6e2",
  "\\vpk\\client_mp_rr_aqueduct.bsp.pak000_000.vpk": {
-  "SDK": "a6f258033c6ad22d8a3d06cb0937c3fc2a3c8c73"
+  "SDK": "06f4a30406f86d85a1f58986c79b03ef4a0fd936"
  },
  "\\vpk\\client_mp_rr_aqueduct_night.bsp.pak000_000.vpk": {
-  "SDK": "3154c35a06d4b16c9b35a0442c368e90efc44469"
+  "SDK": "8895584b0f2811b0360c1ed47d453369a26be723"
  },
  "\\vpk\\client_mp_rr_arena_composite.bsp.pak000_000.vpk": {
-  "SDK": "b3fb791d49a92c02713dddcee1729ce8f03bfe83"
+  "SDK": "34583ed979cc9d3c579ee5be1f570408649091f3"
  },
  "\\vpk\\client_mp_rr_arena_skygarden.bsp.pak000_000.vpk": {
-  "SDK": "27b1f4da571e14aaed3c24cd2e37a8e0149b01d0"
+  "SDK": "9fdb1e548a1059d8a62dd1b521d9e77794c93894"
  },
  "\\vpk\\client_mp_rr_ashs_redemption.bsp.pak000_000.vpk": {
-  "SDK": "5c6aa1d4ac10d6cfadbd81bd8059108b42fac23c"
+  "SDK": "b1b9abbd6372c2e23cbbe4c3d88d2c34c5eec369"
  },
  "\\vpk\\client_mp_rr_canyonlands_64k_x_64k.bsp.pak000_000.vpk": {
   "Default": "a2242ebaadd2449565093a632ae8024458bdedc8",
-  "SDK": "0a0283396b496c9907f7ac88976408b321907bf6"
+  "SDK": "ade26cc74ba2166972e11129ebc2f44c3f346d24"
  },
  "\\vpk\\client_mp_rr_canyonlands_64k_x_64k.bsp.pak000_001.vpk": "80ea16d3d5f5133f6b8209750876a612355ef446",
  "\\vpk\\client_mp_rr_canyonlands_64k_x_64k.bsp.pak000_002.vpk": "888fb92b7abf39d82ea4903015af567ee934416c",
  "\\vpk\\client_mp_rr_canyonlands_64k_x_64k.bsp.pak000_003.vpk": "e35637c34a6e91552ec4582bf635f91dec8b1694",
  "\\vpk\\client_mp_rr_canyonlands_mu1.bsp.pak000_000.vpk": {
   "Default": "275042c783a9f68c8ceef08e3718391189a23f95",
-  "SDK": "6cdfd28959e74479c0ac8fb70253030a6874f182"
+  "SDK": "7a1eb9e51fb83fd589ba81551542716f9b113c4f"
  },
  "\\vpk\\client_mp_rr_canyonlands_mu1.bsp.pak000_001.vpk": "418367fc2d71fbb52fe4cb7026004ba74daa3723",
  "\\vpk\\client_mp_rr_canyonlands_mu1.bsp.pak000_002.vpk": "b5ba30e0ff82d3429d1aa6fa4cd8ee381b627357",
@@ -1343,13 +1346,13 @@
  "\\vpk\\client_mp_rr_canyonlands_mu1.bsp.pak000_004.vpk": "5b4db64fdf2a9ca4cae1130da7029a534880ab91",
  "\\vpk\\client_mp_rr_canyonlands_mu1_night.bsp.pak000_000.vpk": {
   "Default": "75cf6ccb2caa8b92d0b09ea35c816946d827da12",
-  "SDK": "8313792d4fd01d91b20fbffba907da187f78ae5b"
+  "SDK": "f5a85819d07ee15f8c983ab119adb6db6be0fadd"
  },
  "\\vpk\\client_mp_rr_canyonlands_mu1_night.bsp.pak000_001.vpk": "7fe5fb9cd102944d9e192a44f57539ff769d2530",
  "\\vpk\\client_mp_rr_canyonlands_mu1_night.bsp.pak000_002.vpk": "361c132fbebdb126f7f61ed46d40240fde0cce78",
  "\\vpk\\client_mp_rr_canyonlands_staging.bsp.pak000_000.vpk": {
   "Default": "1a67c91bb913da17a44263c2e63eeb556ef4aeaf",
-  "SDK": "4ba450f04eae7379cf9bdb8aa30592e10b379946"
+  "SDK": "0fc44f91e21f467f8a2b6122108112d46dfddda3"
  },
  "\\vpk\\client_mp_rr_canyonlands_staging.bsp.pak000_001.vpk": "3299179489e2845051293a3ab97aaf03548eef78",
  "\\vpk\\client_mp_rr_canyonlands_staging.bsp.pak000_002.vpk": "c2c247da0da8fc18fb095b1913c55c045371dba3",
@@ -1357,84 +1360,84 @@
  "\\vpk\\client_mp_rr_canyonlands_staging.bsp.pak000_004.vpk": "99c70e85ed5a28d65091221523fe2962340671ce",
  "\\vpk\\client_mp_rr_desertlands_64k_x_64k.bsp.pak000_000.vpk": {
   "Default": "6813744db4c9920f19b942245019619cfd6f9b2f",
-  "SDK": "7d41503ff924c27aa66d041666c08cde8392eaf0"
+  "SDK": "a184677ae0c93fba4081f898a246821cccaf441f"
  },
  "\\vpk\\client_mp_rr_desertlands_64k_x_64k.bsp.pak000_001.vpk": "7b70d2562554631bd203e49376439bb9abe23b60",
  "\\vpk\\client_mp_rr_desertlands_64k_x_64k_nx.bsp.pak000_000.vpk": {
-  "SDK": "1a97611d86a82b6205cfd2dc43f457f97c69606f"
+  "SDK": "f5490c230415352603d5f380873aea2a016d40ac"
  },
  "\\vpk\\client_mp_rr_desertlands_64k_x_64k_tt.bsp.pak000_000.vpk": {
-  "SDK": "e91519fc473d24fd5d1a3950306c46fd06611caa"
+  "SDK": "111b9620c079fda521410b540feb1afab59a66a3"
  },
  "\\vpk\\client_mp_rr_party_crasher.bsp.pak000_000.vpk": {
-  "SDK": "ce50f8c824b84957035d725336743e69bacd5ca6"
+  "SDK": "016419579fa21b01f51f772f1a71058451e4ab74"
  },
  "\\vpk\\enable.txt": "70697bcd4c051272e4aeb5ec294fb9adb2d767b5",
  "\\vpk\\englishclient_frontend.bsp.pak000_dir.vpk": {
   "Default": "456b37fd5189ab652f947aa529d3fa4e801325f9",
-  "SDK": "e028bfb563fde03a31a051d2936c31101ba29343"
+  "SDK": "c42701f8ff4366e2d96c06dcee9afa2aa1a9f5ad"
  },
  "\\vpk\\englishclient_mp_common.bsp.pak000_dir.vpk": {
   "Default": "26990ac0a950ab62576b406539e8a74427d114a3",
-  "SDK": "709450dadfceb9d3a068a15d678adbb94a0c69a4"
+  "SDK": "682b03109b2f4285dc2cde7cecc91cf566748f67"
  },
  "\\vpk\\englishclient_mp_rr_aqueduct.bsp.pak000_dir.vpk": {
-  "SDK": "c2b8efbf6d2b90a1c24a3252607dad95f9508127"
+  "SDK": "3b47af3f32f7fae579cffaeb1896813b33ed8edc"
  },
  "\\vpk\\englishclient_mp_rr_aqueduct_night.bsp.pak000_dir.vpk": {
-  "SDK": "6aad4a752e08144e8c17cccb290bf5ba9b0cc9d9"
+  "SDK": "299e95d093b24e9012401bf40b5c94c714937a7e"
  },
  "\\vpk\\englishclient_mp_rr_arena_composite.bsp.pak000_dir.vpk": {
-  "SDK": "77e5ec8c4b2492bd9cff9d58c780fd7c618e39b7"
+  "SDK": "235c90dd43c32f9d8fcfba1e517ff4ec17617dcc"
  },
  "\\vpk\\englishclient_mp_rr_arena_skygarden.bsp.pak000_dir.vpk": {
-  "SDK": "712382d2551adb1f24aabf747a28755bf6e84f98"
+  "SDK": "3986e828e4d4012055dea3d81693d19a5553f439"
  },
  "\\vpk\\englishclient_mp_rr_ashs_redemption.bsp.pak000_dir.vpk": {
-  "SDK": "a778269ed259f88277a73b725a94cd320065bec6"
+  "SDK": "b77fdedf8b41b6ac9ad2ef7c38e04f7b9187a4b5"
  },
  "\\vpk\\englishclient_mp_rr_canyonlands_64k_x_64k.bsp.pak000_dir.vpk": {
   "Default": "0bdd2ab0f6ab0238cf406cffaa7ae2072e686571",
-  "SDK": "5f9370b8d8c15625531570b947fce943bb7673b5"
+  "SDK": "fdc83384ffcc7d3cc6d3297e32bfbc91cd01db0c"
  },
  "\\vpk\\englishclient_mp_rr_canyonlands_mu1.bsp.pak000_dir.vpk": {
   "Default": "2d7bc84578275c74b94864d6495eaf731bca0c3e",
-  "SDK": "372ec399926005a8de3dfaceebb958078d7afe34"
+  "SDK": "b7865177abcba37b53c1156079494b6514de6661"
  },
  "\\vpk\\englishclient_mp_rr_canyonlands_mu1_night.bsp.pak000_dir.vpk": {
   "Default": "ca6147aab2107ddc705910deb3e087379cd82756",
-  "SDK": "829b3040e6025ea5d339a996124684f1b35c2bbe"
+  "SDK": "5b9c0487245f92649fb121f765a4c3c3b8db7d83"
  },
  "\\vpk\\englishclient_mp_rr_canyonlands_staging.bsp.pak000_dir.vpk": {
   "Default": "e00cf502383b71179f369cb4b71686f94c921b1a",
-  "SDK": "a72c12430c770cf4020b9481440d4113f32c476a"
+  "SDK": "c50531ef1ef8c08c9bade0ffa47786c3c9bbe0cd"
  },
  "\\vpk\\englishclient_mp_rr_desertlands_64k_x_64k.bsp.pak000_dir.vpk": {
   "Default": "1dbde96121277978bc2c3151c8511861064a1045",
-  "SDK": "0d9c2bd6823d69479284a797146b2bc6f91383de"
+  "SDK": "eeab823dc1d84c4dd42a1e1579f248c26adda7e7"
  },
  "\\vpk\\englishclient_mp_rr_desertlands_64k_x_64k_nx.bsp.pak000_dir.vpk": {
-  "SDK": "aecfe167d11ba7fe1d854228ed35811f79b9c156"
+  "SDK": "e4f21daae12ce50af0c7bc0e32dc05e1c1c198f1"
  },
  "\\vpk\\englishclient_mp_rr_desertlands_64k_x_64k_tt.bsp.pak000_dir.vpk": {
-  "SDK": "a6259779f0ec416795fa6dc5edd0fd932c895ee5"
+  "SDK": "91069b237e54e18ba465459a5c5505b0e37aa04c"
  },
  "\\vpk\\englishclient_mp_rr_party_crasher.bsp.pak000_dir.vpk": {
-  "SDK": "e02c462a9f7047ca0aa41a7576dfe1b6835ab60c"
+  "SDK": "62a561b7d57ce049578aca5411836876496fe690"
  },
  "\\vpk\\englishserver_mp_common.bsp.pak000_dir.vpk": {
-  "SDK": "cf2d50bba6a0c655fb2dc6559d180e3726779e75"
+  "SDK": "287206b83c5351dcab9759b4bda1de35cdb4e582"
  },
  "\\vpk\\englishserver_mp_rr_canyonlands_staging.bsp.pak000_dir.vpk": {
-  "SDK": "f7b71f14130374bb4d09b35523c9290aa8fcb750"
+  "SDK": "e95a6cb8e9a756af4e0e60d3c034335010ea4e40"
  },
  "\\vpk\\server_mp_common.bsp.pak000_000.vpk": {
-  "SDK": "d8f682969371323a5a69287ce0101d4d7b3f09b3"
+  "SDK": "46cfcecf29b75b9da4760a561c2390ecd283cb34"
  },
  "\\vpk\\server_mp_rr_canyonlands_staging.bsp.pak000_000.vpk": {
-  "SDK": "49027d4e29d6ebfdcdaa8bee9b6a6f3ec7c08e56"
+  "SDK": "fda1e26ed731a56b87c56d7517f20a7161692f7b"
  },
  "\\vpk\\vpk_allmaps.log": {
-  "SDK": "2abb5abbe8706eaad48da3d062ba70c348a74046"
+  "SDK": "a58fb4885d03de544036ab747cb10e8f87e40dd5"
  }
 }
