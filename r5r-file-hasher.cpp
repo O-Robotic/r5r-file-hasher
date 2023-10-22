@@ -25,8 +25,8 @@ size_t bytesWritten = 0;
 
 //Config options for hash json generation
 //Paths to check, will check all files and directories from this point
-const char* paths[]{ "\\paks", "\\vpk", "\\media" , "\\audio", "\\stbsp", "\\cfg" , "\\bin", "\\materials", "\\platform\\shaders" };
-const char* excluded_files[]{ "r5r-file-hasher.exe", "build.txt", "gameinfo.txt", "gameversion.txt", "hashes.json", "ui_sdk.rpak"};
+const char* paths[]{ "\\paks", "\\vpk", "\\media" , "\\audio", "\\stbsp", "\\cfg" , "\\bin", "\\materials", "\\platform\\shaders", "\\platform\\resource", "\\platform\\scripts"};
+const char* excluded_files[]{ "r5r-file-hasher.exe", "build.txt", "gameinfo.txt", "gameversion.txt", "hashes.json", "launcher.exe"};
 
 const char* logo = R"(+-----------------------------------------------+
 |   ___ ___ ___     _              _        _   |
@@ -99,7 +99,7 @@ bool DownloadHashJson()
 		curl_easy_cleanup(curl);
 		return false;
 	}
-	
+
 	curl_easy_cleanup(curl);
 
 	return true;
@@ -115,88 +115,97 @@ void HashFile(const fs::path& path_in, const bool gen_hash)
 
 	unsigned char* buf = (unsigned char*)malloc(ReadSize);
 
-	FILE* file = fopen(path_in.u8string().c_str(), "rb");
+	if (buf)
+	{
+		FILE* file = fopen(path_in.u8string().c_str(), "rb");
 
-	size_t filePos = 0;
+		size_t filePos = 0;
 
-	bool didHash = false;
+		bool didHash = false;
 
-	if (file)
-	{	
-		while (filePos = fread(buf, 1, ReadSize, file))
+		if (file)
+		{
+			while (filePos = fread(buf, 1, ReadSize, file))
 			{
 				Sha1_Update(sha, buf, filePos);
 			}
-		didHash = true;
-		fclose(file);
-	}
-	else
-	{
-		std::cout << "Failed to open: " << path_in.u8string().c_str() << std::endl;
-	}
-	
-	unsigned char result[20];
-	Sha1_Final(sha, result);
-
-	std::stringstream shastr;
-	shastr << std::hex << std::setfill('0');
-	for (const auto& byte : result)
-	{
-		shastr << std::setw(2) << (int)byte;
-	}
-
-	free(buf);
-	delete sha;
-
-	std::string file_hash = shastr.str();
-
-	if (didHash)
-	{
-		std::string path_str = path_in.u8string();
-		std::size_t ind = path_str.find(fs::current_path().u8string());
-		if (shouldAddSDK)
-		{
-			path_str.erase(ind, (fs::current_path() += "\\SDK").u8string().length());
+			didHash = true;
+			fclose(file);
 		}
 		else
 		{
-			path_str.erase(ind, fs::current_path().u8string().length());
+			std::cout << "Failed to open: " << path_in.u8string().c_str() << std::endl;
 		}
-#ifdef BUILDER
-		if (!gen_hash)
-		{
-			unknown[path_str] = file_hash;
-		}
-		else
-		{
 
+		unsigned char result[20];
+		Sha1_Final(sha, result);
+
+		std::stringstream shastr;
+		shastr << std::hex << std::setfill('0');
+		for (const auto& byte : result)
+		{
+			shastr << std::setw(2) << (int)byte;
+		}
+
+		free(buf);
+		delete sha;
+
+		std::string file_hash = shastr.str();
+
+		if (didHash)
+		{
+			std::string path_str = path_in.u8string();
+			std::size_t ind = path_str.find(fs::current_path().u8string());
 			if (shouldAddSDK)
 			{
-				if (known[path_str].is_object())
-				{
-					known[path_str] += {"Default", file_hash };
-				}
-				else
-				{
-					known[path_str] = { {"SDK", file_hash }};
-				}
-			}
-			else if (known[path_str].is_object())
-			{
-				known[path_str] += {"Default", file_hash};
+				path_str.erase(ind, (fs::current_path() += "\\SDK").u8string().length());
 			}
 			else
 			{
-				known[path_str] = file_hash;
+				path_str.erase(ind, fs::current_path().u8string().length());
 			}
+#ifdef BUILDER
+			if (!gen_hash)
+			{
+				unknown[path_str] = file_hash;
+			}
+			else
+			{
 
-			std::cout << "Hashed: " << path_str << "\nHash: " << file_hash << "\n" << std::endl;
-		}
+				if (shouldAddSDK)
+				{
+					if (known[path_str].is_object())
+					{
+						known[path_str] += {"Default", file_hash };
+					}
+					else
+					{
+						known[path_str] = { {"SDK", file_hash }};
+					}
+				}
+				else if (known[path_str].is_object())
+				{
+					known[path_str] += {"Default", file_hash};
+				}
+				else
+				{
+					known[path_str] = file_hash;
+				}
+
+				std::cout << "Hashed: " << path_str << "\nHash: " << file_hash << "\n" << std::endl;
+			}
 #endif
 
 #ifndef BUILDER
-		unknown[path_str] = file_hash;
+			unknown[path_str] = file_hash;
 #endif
+		}
+	}
+	else
+	{
+		std::cout << "Failed to allocate needed memory" << std::endl;
+		system("pause");
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -211,6 +220,12 @@ int main()
 	std::cout << logo << std::endl;
 	std::cout << "R5R file hash check" << std::endl;
 	
+	if (!fs::exists("r5apex.exe")) {
+		std::cout << "Please run this tool in the folder with r5apex.exe" << std::endl;
+		system("pause");
+		exit(EXIT_FAILURE);
+	}
+
 #ifndef BUILDER
 	if (!fs::exists("hashes.json"))
 	{
